@@ -1,6 +1,7 @@
 package com.victoryw.deplayqueue.redis.gateway.redisQueue
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.victoryw.deplayqueue.redis.gateway.controller.DelayJobDTO
 import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
 import io.lettuce.core.RedisClient
@@ -19,13 +20,14 @@ class RedisQueueOperator(
         }
     }
 
-    fun fetchQueueMembers(sourceType: String): List<String>? {
-        return createConnection().use { connect ->
+    fun fetchMembers(queueType: String): List<DelayJobDTO> {
+        val fetchQueueMembers = createConnection().use { connect ->
             val redisCommands = connect.sync()
-            return@use redisCommands.zrange(delayQueueRedisKeyBuilder.createDelayQueueKey(sourceType),
+            return@use redisCommands.zrange(delayQueueRedisKeyBuilder.createDelayQueueKey(queueType),
                     0, -1)
 
         }
+        return fetchQueueMembers.map { member -> objectMapper.readValue<DelayJobDTO>(member) }
     }
 
     fun createDelayJobs(delayRequest: DelayJobDTO) {

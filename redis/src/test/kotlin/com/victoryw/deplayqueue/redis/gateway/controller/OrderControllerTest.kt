@@ -1,6 +1,7 @@
 package com.victoryw.deplayqueue.redis.gateway.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
 import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
 import io.lettuce.core.RedisClient
@@ -58,11 +59,11 @@ class OrderControllerTest @Autowired constructor(private val wac: WebApplication
 
         mockMvc.perform(post(resourceUrl).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(eventData))).andExpect(status().isCreated)
 
-        val delayJobs = redisQueueOperator.fetchQueueMembers(eventData.sourceType);
+        val delayJobs = redisQueueOperator.fetchMembers(eventData.sourceType);
 
         Assert.notEmpty(delayJobs)
 
-        assertEquals(1, delayJobs!!.size)
+        assertEquals(1, delayJobs.size)
     }
-}
 
+}
