@@ -31,39 +31,12 @@ class OrderControllerTest @Autowired constructor(private val wac: WebApplication
 
     private lateinit var mockMvc: MockMvc
     private lateinit var resourceUrl: String
-
     private val queueType = "source"
 
     @BeforeEach
     fun baseBefore() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build()
         redisQueueOperator.deleteQueue(queueType)
-    }
-
-    @Test
-    fun `should get the 200 ok after call order api`() {
-        mockMvc.perform(get("/api/orders/").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk)
-    }
-
-
-
-    @Test
-    fun `should create a delayed event in the queue`() {
-        val minute = 6000L
-        val plusSeconds = Instant.now().plusSeconds(minute)
-        val eventData = DelayJobDTO(plusSeconds.toEpochMilli(),
-                "testEvent", queueType)
-
-        mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(eventData))).andExpect(status().isCreated)
-
-        val delayJobs = redisQueueOperator.fetchQueueMembers(eventData.sourceType);
-
-        Assert.notEmpty(delayJobs)
-
-        assertEquals(1, delayJobs!!.size)
-    }
-
-=======
         resourceUrl  = "/api/delayJobs/"
     }
 
@@ -91,7 +64,5 @@ class OrderControllerTest @Autowired constructor(private val wac: WebApplication
 
         assertEquals(1, delayJobs!!.size)
     }
-
->>>>>>> init the enqueue of delay job
 }
 
