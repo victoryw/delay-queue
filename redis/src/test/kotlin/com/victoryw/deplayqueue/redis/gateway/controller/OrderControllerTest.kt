@@ -1,7 +1,7 @@
 package com.victoryw.deplayqueue.redis.gateway.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.victoryw.deplayqueue.redis.gateway.redisQueue.DelayJobDTO
 import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
 import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
 import io.lettuce.core.RedisClient

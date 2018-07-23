@@ -1,9 +1,9 @@
-package com.victoryw.deplayqueue.redis.gateway.controller
+package com.victoryw.deplayqueue.redis.gateway.redisQueue
 
-import com.victoryw.deplayqueue.redis.gateway.redisQueue.IDelayJobDTO
+import java.io.Serializable
 
 data class DelayJobDTO(
-        override val delayTo: Long,
-        override val eventType: String,
-        override val sourceType: String
-) : IDelayJobDTO
+        val delayTo: Long,
+        val eventType: String,
+        val sourceType: String
+) : Serializable
