@@ -22,7 +22,7 @@ class FakeDelayJobConsumer : IDelayJobConsumer {
 class FakeDelayJobConfig {
     @Primary
     @Bean
-    fun createDelayJobConsumer(): IDelayJobConsumer {
+    fun createFakeDelayJobConsumer(): IDelayJobConsumer {
         return FakeDelayJobConsumer();
     }
 }

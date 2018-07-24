@@ -7,7 +7,6 @@ interface IDelayJobConsumer {
 
 }
 
-@Service
 class EmptyDelayJobConsumer: IDelayJobConsumer {
     override fun consume(delayJob: DelayJob) {}
 }

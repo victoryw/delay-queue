@@ -1,5 +1,5 @@
 import com.victoryw.deplayqueue.redis.fake.gateway.interfaces.FakeDelayJobConfig
-import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
+import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -10,11 +10,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @SpringBootTest
 @Import(FakeDelayJobConfig::class)
 class IntegrationTestBase(
-        protected val redisQueueOperator: RedisQueueOperator,
+        protected val redisQueueOperator: QueueOperator,
         protected val queueType: String
 ) {
     @BeforeEach
-    fun integrationBaseBefore(){
+    fun integrationBaseBefore() {
         redisQueueOperator.deleteQueue(queueType)
     }
 }

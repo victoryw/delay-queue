@@ -6,11 +6,9 @@ import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
 import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import io.lettuce.core.RedisClient
 import io.lettuce.core.ScriptOutputType
-import org.springframework.stereotype.Service
 
-@Service
 class RedisQueueOperator(
-        val redisClient: RedisClient,
+        private val redisClient: RedisClient,
         delayQueueRedisKeyBuilder: IDelayQueueKeyBuilder) : QueueOperator(delayQueueRedisKeyBuilder) {
 
     override fun deleteQueue(queueType: String) {

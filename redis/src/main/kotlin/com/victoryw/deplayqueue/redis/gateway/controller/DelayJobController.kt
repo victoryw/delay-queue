@@ -1,25 +1,20 @@
 package com.victoryw.deplayqueue.redis.gateway.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.victoryw.deplayqueue.redis.interfaces.DelayJob
-import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
-import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
-import io.lettuce.core.RedisClient
+import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/delayJobs")
-class DelayJobController(private val redisClient: RedisClient, private val objectMapper: ObjectMapper,
-                         private val keyBuilder: IDelayQueueKeyBuilder,
-                         private val redisQueueOperator: RedisQueueOperator) {
+class DelayJobController(private val queueOperator: QueueOperator) {
     @GetMapping("/")
     fun getAll() = listOf("1");
 
     @PostMapping
-    @ResponseStatus( HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody delayRequest: DelayJob) {
-        redisQueueOperator.createDelayJobs(delayRequest)
+        queueOperator.createDelayJobs(delayRequest)
     }
 
 }

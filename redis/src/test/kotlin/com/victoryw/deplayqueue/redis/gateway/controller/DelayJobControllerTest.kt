@@ -3,7 +3,7 @@ package com.victoryw.deplayqueue.redis.gateway.controller
 import ApiTestBase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.victoryw.deplayqueue.redis.interfaces.DelayJob
-import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
+import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -16,10 +16,10 @@ import java.time.Instant
 import kotlin.test.assertEquals
 
 
-class OrderControllerTest @Autowired constructor(
+class DelayJobControllerTest @Autowired constructor(
         wac: WebApplicationContext,
         objectMapper: ObjectMapper,
-        redisQueueOperator: RedisQueueOperator
+        redisQueueOperator: QueueOperator
 ) : ApiTestBase(wac, "source", redisQueueOperator, objectMapper) {
 
     private val resourceUrl = "/api/delayJobs/"
@@ -29,7 +29,6 @@ class OrderControllerTest @Autowired constructor(
     fun `should get the 200 ok after call order api`() {
         mockMvc.perform(get(resourceUrl).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk)
     }
-
 
 
     @Test

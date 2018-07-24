@@ -4,9 +4,9 @@ package com.victoryw.deplayqueue.redis.`interface`
 import IntegrationTestBase
 import com.victoryw.deplayqueue.redis.fake.gateway.interfaces.FakeDelayJobConsumer
 import com.victoryw.deplayqueue.redis.interfaces.DelayJob
-import com.victoryw.deplayqueue.redis.gateway.redisQueue.RedisQueueOperator
 import com.victoryw.deplayqueue.redis.interfaces.DelayJobWorker
 import com.victoryw.deplayqueue.redis.interfaces.IDelayJobConsumer
+import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.util.Assert
@@ -14,7 +14,7 @@ import java.util.*
 
 class DelayJobListenerTest(
         @Autowired val delayJobWorker: DelayJobWorker,
-        @Autowired redisQueueOperator: RedisQueueOperator,
+        @Autowired redisQueueOperator: QueueOperator,
         @Autowired delayJobConsumer: IDelayJobConsumer
 ) : IntegrationTestBase(redisQueueOperator, "source") {
 
