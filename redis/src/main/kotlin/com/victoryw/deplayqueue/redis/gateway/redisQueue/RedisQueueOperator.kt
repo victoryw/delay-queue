@@ -1,22 +1,26 @@
 package com.victoryw.deplayqueue.redis.gateway.redisQueue
 
+import com.victoryw.deplayqueue.redis.gateway.redisQueue.scripts.popJobScript
+import com.victoryw.deplayqueue.redis.interfaces.DelayJob
 import com.victoryw.deplayqueue.redis.interfaces.IDelayQueueKeyBuilder
+import com.victoryw.deplayqueue.redis.interfaces.QueueOperator
 import io.lettuce.core.RedisClient
+import io.lettuce.core.ScriptOutputType
 import org.springframework.stereotype.Service
 
 @Service
 class RedisQueueOperator(
         val redisClient: RedisClient,
-        val delayQueueRedisKeyBuilder: IDelayQueueKeyBuilder) {
+        delayQueueRedisKeyBuilder: IDelayQueueKeyBuilder) : QueueOperator(delayQueueRedisKeyBuilder) {
 
-    fun deleteQueue(queueType: String) {
+    override fun deleteQueue(queueType: String) {
         createConnection().use {
             val queueName = delayQueueRedisKeyBuilder.createDelayQueueKey(queueType)
             it.sync().del(queueName)
         }
     }
 
-    fun fetchMembers(queueType: String): List<DelayJobDTO> {
+    override fun fetchMembers(queueType: String): List<DelayJob> {
         createConnection().use { connect ->
             val redisCommands = connect.sync()
             return redisCommands.zrange(delayQueueRedisKeyBuilder.createDelayQueueKey(queueType),
@@ -25,15 +29,33 @@ class RedisQueueOperator(
         }
     }
 
-    fun createDelayJobs(delayRequest: DelayJobDTO) {
+    override fun createDelayJobs(delayRequest: DelayJob) {
         createConnection().use { connect ->
             val redisCommando = connect.sync();
-            val redisKey = delayQueueRedisKeyBuilder.createDelayQueueKey(delayRequest.sourceType)
+            val redisKey = createQueueName(delayRequest)
             redisCommando.zadd(redisKey, delayRequest.delayTo.toDouble(), delayRequest);
         }
     }
 
-    fun createConnection() = redisClient.connect(SerializedObjectCodec())!!
+    override fun popOnTimeJob(sourceType: String, endTime: Long, callback: ((DelayJob) -> Unit)) {
+        createConnection().use {
+            val redisCommando = it.sync();
+            val redisKey = delayQueueRedisKeyBuilder.createDelayQueueKey(sourceType)
+            val onTimeJob = redisCommando.eval<DelayJob?>(
+                    popJobScript,
+                    ScriptOutputType.VALUE,
+                    redisKey,
+                    endTime.toString()
+            )
+
+            if (onTimeJob != null) {
+                callback(onTimeJob)
+            }
+
+        }
+    }
+
+    private fun createConnection() = redisClient.connect(SerializedObjectCodec())!!
 
 }
 

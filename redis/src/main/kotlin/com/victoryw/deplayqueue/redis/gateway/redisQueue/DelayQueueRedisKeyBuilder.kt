@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service
 @Service
 class DelayQueueRedisKeyBuilder : IDelayQueueKeyBuilder {
     override fun createDelayQueueKey(queueType: String): String {
-        return "delay-queue-$queueType"
+        return "delayQueue:queue:$queueType"
     }
 }
